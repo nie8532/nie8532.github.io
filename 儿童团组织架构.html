@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>苏区共产主义儿童团组织关系图</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B0000',
+            secondary: '#D2B48C',
+            neutral: '#F5F5DC',
+            accent: '#CD853F',
+            dark: '#3C2A21'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .graph-container {
+        height: calc(100vh - 12rem);
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .text-shadow {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      }
+    }
+  </style>
+</head>
+<body class="bg-neutral text-dark min-h-screen flex flex-col">
+  <!-- 顶部导航 -->
+  <header class="bg-primary text-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-university text-2xl"></i>
+        <h1 class="text-xl md:text-2xl font-bold text-shadow">苏区共产主义儿童团组织关系可视化</h1>
+      </div>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="#" class="hover:text-secondary transition-colors duration-300 flex items-center">
+          <i class="fa fa-home mr-1"></i> 首页
+        </a>
+        <a href="#" class="hover:text-secondary transition-colors duration-300 flex items-center">
+          <i class="fa fa-info-circle mr-1"></i> 关于
+        </a>
+        <a href="#" class="hover:text-secondary transition-colors duration-300 flex items-center">
+          <i class="fa fa-book mr-1"></i> 历史资料
+        </a>
+      </div>
+      <button class="md:hidden text-white text-xl">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主要内容区 -->
+  <main class="flex-grow container mx-auto px-4 py-6">
+    <div class="mb-6 bg-white rounded-lg p-4 card-shadow">
+      <h2 class="text-xl font-bold text-primary mb-2">苏区共产主义儿童团简介</h2>
+      <p class="text-gray-700 leading-relaxed">
+        苏区共产主义儿童团是土地革命战争时期，在中国共产党领导的革命根据地内建立的少年儿童组织，是共青团的后备力量。儿童团的任务是学习共产主义，宣传抗日，动员儿童参加力所能及的革命工作，为革命事业培养了大批优秀接班人。
+      </p>
+    </div>
+    
+    <div class="bg-white rounded-lg p-4 card-shadow mb-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+        <div>
+          <h2 class="text-xl font-bold text-primary mb-1">组织关系网络图</h2>
+          <p class="text-gray-600 text-sm">展示苏区共产主义儿童团的组织结构和主要人物关系</p>
+        </div>
+        <div class="mt-3 md:mt-0 flex space-x-3">
+          <button id="zoomIn" class="bg-primary hover:bg-primary/90 text-white px-3 py-1 rounded transition-colors duration-300 flex items-center">
+            <i class="fa fa-search-plus mr-1"></i> 放大
+          </button>
+          <button id="zoomOut" class="bg-primary hover:bg-primary/90 text-white px-3 py-1 rounded transition-colors duration-300 flex items-center">
+            <i class="fa fa-search-minus mr-1"></i> 缩小
+          </button>
+          <button id="resetView" class="bg-primary hover:bg-primary/90 text-white px-3 py-1 rounded transition-colors duration-300 flex items-center">
+            <i class="fa fa-refresh mr-1"></i> 重置
+          </button>
+        </div>
+      </div>
+      <!-- 图表容器 -->
+      <div id="graphContainer" class="graph-container w-full rounded-lg border border-gray-200"></div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-lg p-4 card-shadow">
+        <h2 class="text-xl font-bold text-primary mb-3">组织角色说明</h2>
+        <ul class="space-y-2 text-gray-700">
+          <li class="flex items-start">
+            <span class="inline-block w-3 h-3 rounded-full bg-red-500 mr-2 mt-1.5"></span>
+            <span><strong>总团长</strong>：负责儿童团的全面工作，领导和协调各部门</span>
+          </li>
+          <li class="flex items-start">
+            <span class="inline-block w-3 h-3 rounded-full bg-blue-500 mr-2 mt-1.5"></span>
+            <span><strong>宣传委员</strong>：负责抗日宣传和组织文化活动</span>
+          </li>
+          <li class="flex items-start">
+            <span class="inline-block w-3 h-3 rounded-full bg-green-500 mr-2 mt-1.5"></span>
+            <span><strong>组织委员</strong>：负责团员发展和组织建设</span>
+          </li>
+          <li class="flex items-start">
+            <span class="inline-block w-3 h-3 rounded-full bg-yellow-500 mr-2 mt-1.5"></span>
+            <span><strong>军事委员</strong>：负责军事训练和自卫工作</span>
+          </li>
+          <li class="flex items-start">
+            <span class="inline-block w-3 h-3 rounded-full bg-purple-500 mr-2 mt-1.5"></span>
+            <span><strong>儿童团员</strong>：基层成员，参与各项活动</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="bg-white rounded-lg p-4 card-shadow">
+        <h2 class="text-xl font-bold text-primary mb-3">互动指南</h2>
+        <ul class="space-y-2 text-gray-700">
+          <li class="flex items-start">
+            <i class="fa fa-arrows-alt text-primary mr-2 mt-1"></i>
+            <span>拖动鼠标可以平移视图</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa fa-search-plus text-primary mr-2 mt-1"></i>
+            <span>鼠标滚轮可以缩放视图</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa fa-mouse-pointer text-primary mr-2 mt-1"></i>
+            <span>点击节点可以查看详细信息</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa fa-hand-pointer-o text-primary mr-2 mt-1"></i>
+            <span>悬停在节点或边上可以查看关系详情</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fa fa-filter text-primary mr-2 mt-1"></i>
+            <span>点击图例可以显示/隐藏特定角色的成员</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white mt-8">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm text-gray-400">© 2025 苏区历史研究中心. 保留所有权利.</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+            <i class="fa fa-weibo text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+            <i class="fa fa-wechat text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+            <i class="fa fa-github text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 等待DOM加载完成
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化图表
+      const myChart = echarts.init(document.getElementById('graphContainer'));
+      
+      // 显示加载状态
+      myChart.showLoading();
+      
+      // 模拟数据加载
+      setTimeout(function() {
+        myChart.hideLoading();
+        
+        // 苏区儿童团组织结构数据
+        const graph = {
+          categories: [
+            {name: '总团长', keyword: {}, itemStyle: {normal: {color: '#ff4d4f'}}},
+            {name: '宣传委员', keyword: {}, itemStyle: {normal: {color: '#40a9ff'}}},
+            {name: '组织委员', keyword: {}, itemStyle: {normal: {color: '#52c41a'}}},
+            {name: '军事委员', keyword: {}, itemStyle: {normal: {color: '#faad14'}}},
+            {name: '儿童团员', keyword: {}, itemStyle: {normal: {color: '#722ed1'}}}
+          ],
+          nodes: [
+            {name: '王明', category: 0, symbolSize: 50, x: 300, y: 150},
+            {name: '李红', category: 1, symbolSize: 40, x: 200, y: 250},
+            {name: '张伟', category: 1, symbolSize: 40, x: 400, y: 250},
+            {name: '刘芳', category: 2, symbolSize: 40, x: 250, y: 350},
+            {name: '陈强', category: 2, symbolSize: 40, x: 350, y: 350},
+            {name: '黄小明', category: 3, symbolSize: 45, x: 200, y: 450},
+            {name: '赵小华', category: 3, symbolSize: 45, x: 400, y: 450},
+            {name: '孙大勇', category: 4, symbolSize: 35, x: 150, y: 550},
+            {name: '周小花', category: 4, symbolSize: 35, x: 250, y: 550},
+            {name: '吴小刚', category: 4, symbolSize: 35, x: 350, y: 550},
+            {name: '郑小红', category: 4, symbolSize: 35, x: 450, y: 550}
+          ],
+          links: [
+            {source: '王明', target: '李红', value: '领导'},
+            {source: '王明', target: '张伟', value: '领导'},
+            {source: '王明', target: '刘芳', value: '领导'},
+            {source: '王明', target: '陈强', value: '领导'},
+            {source: '王明', target: '黄小明', value: '领导'},
+            {source: '王明', target: '赵小华', value: '领导'},
+            {source: '李红', target: '孙大勇', value: '指导'},
+            {source: '李红', target: '周小花', value: '指导'},
+            {source: '张伟', target: '吴小刚', value: '指导'},
+            {source: '张伟', target: '郑小红', value: '指导'},
+            {source: '刘芳', target: '孙大勇', value: '组织'},
+            {source: '刘芳', target: '周小花', value: '组织'},
+            {source: '陈强', target: '吴小刚', value: '组织'},
+            {source: '陈强', target: '郑小红', value: '组织'},
+            {source: '黄小明', target: '孙大勇', value: '训练'},
+            {source: '黄小明', target: '吴小刚', value: '训练'},
+            {source: '赵小华', target: '周小花', value: '训练'},
+            {source: '赵小华', target: '郑小红', value: '训练'},
+            {source: '李红', target: '张伟', value: '协作'},
+            {source: '刘芳', target: '陈强', value: '协作'},
+            {source: '黄小明', target: '赵小华', value: '协作'}
+          ]
+        };
+        
+        // 处理节点标签显示
+        graph.nodes.forEach(function(node) {
+          node.label = {
+            show: node.symbolSize > 30,
+            formatter: function(params) {
+              return params.name + '\n(' + graph.categories[params.data.category].name + ')';
+            }
+          };
+        });
+        
+        // 图表配置
+        const option = {
+          title: {
+            text: '苏区共产主义儿童团组织关系',
+            subtext: '组织结构网络图',
+            left: 'center',
+            textStyle: {
+              color: '#333',
+              fontSize: 20,
+              fontWeight: 'bold'
+            },
+            subtextStyle: {
+              color: '#666',
+              fontSize: 14
+            }
+          },
+          tooltip: {
+            formatter: function(params) {
+              if (params.dataType === 'node') {
+                return `
+                  <div class="font-bold">${params.name}</div>
+                  <div>角色: ${graph.categories[params.data.category].name}</div>
+                `;
+              } else if (params.dataType === 'edge') {
+                return `
+                  <div>${params.source} → ${params.target}</div>
+                  <div class="text-sm">关系: ${params.data.value}</div>
+                `;
+              }
+              return params.name;
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderColor: '#ccc',
+            borderWidth: 1,
+            textStyle: {
+              color: '#333'
+            },
+            padding: 10
+          },
+          legend: [
+            {
+              type: 'scroll',
+              orient: 'horizontal',
+              bottom: 10,
+              left: 'center',
+              data: graph.categories.map(function(a) {
+                return a.name;
+              }),
+              pageButtonItemGap: 5,
+              pageButtonColor: '#8B0000',
+              pageButtonActiveColor: '#CD853F',
+              textStyle: {
+                color: '#333'
+              }
+            }
+          ],
+          animationDuration: 1500,
+          animationEasingUpdate: 'quinticInOut',
+          series: [
+            {
+              name: '苏区共产主义儿童团',
+              type: 'graph',
+              layout: 'none',
+              data: graph.nodes,
+              links: graph.links,
+              categories: graph.categories,
+              roam: true,
+              focusNodeAdjacency: true,
+              label: {
+                position: 'top',
+                formatter: '{b}',
+                color: '#333',
+                fontSize: 12,
+                fontWeight: 'bold'
+              },
+              lineStyle: {
+                color: 'source',
+                curveness: 0.2,
+                opacity: 0.7,
+                width: 2
+              },
+              emphasis: {
+                focus: 'adjacency',
+                label: {
+                  show: true,
+                  fontSize: 14
+                },
+                lineStyle: {
+                  width: 4,
+                  opacity: 1
+                }
+              },
+              edgeLabel: {
+                show: true,
+                formatter: '{c}',
+                fontSize: 10,
+                color: '#666'
+              },
+              itemStyle: {
+                borderWidth: 1,
+                borderColor: '#fff',
+                shadowBlur: 10,
+                shadowColor: 'rgba(0, 0, 0, 0.3)'
+              }
+            }
+          ]
+        };
+        
+        // 设置图表选项
+        myChart.setOption(option);
+        
+        // 绑定按钮事件
+        document.getElementById('zoomIn').addEventListener('click', function() {
+          myChart.dispatchAction({
+            type: 'dataZoom',
+            zoom: 1.1
+          });
+        });
+        
+        document.getElementById('zoomOut').addEventListener('click', function() {
+          myChart.dispatchAction({
+            type: 'dataZoom',
+            zoom: 0.9
+          });
+        });
+        
+        document.getElementById('resetView').addEventListener('click', function() {
+          myChart.dispatchAction({
+            type: 'restore'
+          });
+        });
+        
+        // 监听窗口大小变化，调整图表大小
+        window.addEventListener('resize', function() {
+          myChart.resize();
+        });
+      }, 1000); // 模拟1秒的数据加载时间
+    });
+  </script>
+</body>
+</html>  
